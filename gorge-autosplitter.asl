@@ -1,7 +1,9 @@
 state("Gorge-Win64-Shipping")
 {
     int gameState: 0x035E03C0, 0xA0, 0xE8, 0x150;
-    // in-game = 302, in intro = 287, on rewind chapter or main menu selection screens = 509, pause = 447
+    // WITH IGT ENABLED: in-game = 302, in intro = 287, on rewind chapter or main menu selection screens = 509, pause = 447, in-game with object frozen = 346
+    // WITH IGT DISABLED:  in-game = 246, in intro = 241, on rewind chapter or main menu selection screens = 483, pause = 421, in-game with object frozen = 300
+    // note that these values also change when prompts are on screen, but thats a rare enough scenario that someone would pause in that time for it to be ignored
     int levelCheck: 0x035E0228, 0x8, 0x100, 0x408;
     // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
     int endCheck: 0x034FBD38, 0x368, 0x410, 0x110, 0x7D8;
@@ -30,6 +32,10 @@ reset
     if(settings["ILMode"] && current.gameState == 509){
         return true;
     }
+    // for no igt
+    if(settings["ILMode"] && current.gameState == 483){
+        return true;
+    }
 }
 
 start
@@ -38,6 +44,13 @@ start
         return true;
     }
     if(current.gameState == 287){
+        return true;
+    }
+    // for no igt
+    if(settings["ILMode"] && current.gameState == 246){
+        return true;
+    }
+    if(current.gameState == 241){
         return true;
     }
 }
@@ -61,6 +74,22 @@ isLoading
         return false;
     }
     if(current.gameState == 287){
+        return false;
+    }
+    if(current.gameState == 346){
+        return false;
+    }
+    // for no igt
+    if(current.gameState == 421){
+        return true;
+    }
+    if(current.gameState == 246){
+        return false;
+    }
+    if(current.gameState == 241){
+        return false;
+    }
+    if(current.gameState == 300){
         return false;
     }
 }
