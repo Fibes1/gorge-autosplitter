@@ -6,12 +6,16 @@ state("Gorge-Win64-Shipping")
 // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
     int endCheck: 0x034FBD38, 0x368, 0x410, 0x110, 0x7D8;
 // on end screen = 4
+    float vhsCheck: 0x034FBD38, 0x68, 0x4D0, 0x560, 0x168, 0x3C;
+// changes when a vhs tape is collected
 }
 
 startup
 {
 	settings.Add("ILMode", false, "IL Mode");
 	settings.SetToolTip("ILMode", "Enables IL timing, meaning the timer will start when entering a level from chapter select and will automatically reset when rewinding chapter or going back to the main menu");
+	settings.Add("AreaSplit", true, "Split when entering a new area");
+	settings.Add("VHSSplit", false, "Split on collecting VHS tapes");
 
 	if (timer.CurrentTimingMethod == TimingMethod.RealTime)
 	{
@@ -53,10 +57,13 @@ start
 
 split
 {
-    if(current.levelCheck > old.levelCheck){
+    if(settings["AreaSplit"] && current.levelCheck > old.levelCheck){
         return true;
     }
     if(current.endCheck == 4){
+        return true;
+    }
+    if(settings["VHSSplit"] && current.vhsCheck != old.vhsCheck){
         return true;
     }
 }
