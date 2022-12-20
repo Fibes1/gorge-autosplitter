@@ -2,7 +2,6 @@ state("Gorge-Win64-Shipping")
 {
     int gameState: 0x035E03C0, 0xA0, 0xE8, 0x150;
 // this changes based on the hud elements on screen, but in almost all cases in game is less than 400 and in a menu is above 400. exceptions are certain loading screens and the main menu.
-// when on the rewind chapter or main menu selection screens, this value is 509 with the in-game timer enabled and 483 with it disabled.
     int levelCheck: 0x035E0228, 0x8, 0x100, 0x408;
 // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
     int endCheck: 0x034FBD38, 0x368, 0x410, 0x110, 0x7D8;
@@ -28,15 +27,26 @@ startup
 
 reset
 {
-    if(settings["ILMode"] && current.gameState==509 || settings["ILMode"] && current.gameState==483){
+    if(settings["ILMode"] && current.gameState==509 && current.gameState!=old.gameState){
+        return true;
+    }
+    if(settings["ILMode"] && current.gameState==483 && current.gameState!=old.gameState){
         return true;
     }
 }
 
 start
 {
-// 364 is main menu, which is why it is ignored
-    if(current.gameState<400 && current.gameState!=364){
+    if(current.gameState==241){
+        return true;
+    }
+    if(current.gameState==287){
+        return true;
+    }
+    if(settings["ILMode"] && current.gameState==302){
+        return true;
+    }
+    if(settings["ILMode"] && current.gameState==246){
         return true;
     }
 }
