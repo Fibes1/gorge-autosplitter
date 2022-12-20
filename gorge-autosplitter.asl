@@ -1,13 +1,12 @@
 state("Gorge-Win64-Shipping")
 {
     int gameState: 0x035E03C0, 0xA0, 0xE8, 0x150;
-    // WITH IGT ENABLED: in-game = 302, in intro = 287, on rewind chapter or main menu selection screens = 509, pause = 447, in-game with object frozen = 346
-    // WITH IGT DISABLED:  in-game = 246, in intro = 241, on rewind chapter or main menu selection screens = 483, pause = 421, in-game with object frozen = 300
-    // note that these values also change when prompts are on screen, but thats a rare enough scenario that someone would pause in that time for it to be ignored
+// this changes based on the hud elements on screen, but in almost all cases in game is less than 400 and in a menu is above 400. exceptions are certain loading screens and the main menu.
+// when on the rewind chapter or main menu selection screens, this value is 509 with the in-game timer enabled and 483 with it disabled.
     int levelCheck: 0x035E0228, 0x8, 0x100, 0x408;
-    // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
+// wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
     int endCheck: 0x034FBD38, 0x368, 0x410, 0x110, 0x7D8;
-    // on end screen = 4
+// on end screen = 4
 }
 
 startup
@@ -29,28 +28,15 @@ startup
 
 reset
 {
-    if(settings["ILMode"] && current.gameState == 509){
-        return true;
-    }
-    // for no igt
-    if(settings["ILMode"] && current.gameState == 483){
+    if(settings["ILMode"] && current.gameState==509 || settings["ILMode"] && current.gameState==483){
         return true;
     }
 }
 
 start
 {
-    if(settings["ILMode"] && current.gameState == 302){
-        return true;
-    }
-    if(current.gameState == 287){
-        return true;
-    }
-    // for no igt
-    if(settings["ILMode"] && current.gameState == 246){
-        return true;
-    }
-    if(current.gameState == 241){
+// 364 is main menu, which is why it is ignored
+    if(current.gameState<400 && current.gameState!=364){
         return true;
     }
 }
@@ -67,29 +53,32 @@ split
 
 isLoading
 {
-    if(current.gameState == 447){
+    if(current.gameState>400){
         return true;
     }
-    if(current.gameState == 302){
+// for rewind chapter, entering from main menu, etc
+    if(current.gameState==246){
         return false;
     }
-    if(current.gameState == 287){
+// same as above but for with igt on
+    if(current.gameState==302){
         return false;
     }
-    if(current.gameState == 346){
+// for rewind chapter, entering from main menu, etc, with the random scenario where the banner shows immediately
+    if(current.gameState==260){
         return false;
     }
-    // for no igt
-    if(current.gameState == 421){
-        return true;
-    }
-    if(current.gameState == 246){
+// same as above but for with igt on
+    if(current.gameState==306){
         return false;
     }
-    if(current.gameState == 241){
+// the unpausing checks below are needed as you won't always unpause with no hud elements on screen, unlike with rewind chapter or entering from main menu
+// for unpausing
+    if(old.gameState==284 && current.gameState!=old.gameState && current.gameState!=221){
         return false;
     }
-    if(current.gameState == 300){
+// for unpausing with igt on
+    if(old.gameState==228 && current.gameState!=old.gameState && current.gameState!=242){
         return false;
     }
 }
