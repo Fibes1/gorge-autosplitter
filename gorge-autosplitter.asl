@@ -60,7 +60,7 @@ split
     if(settings["AreaSplit"] && current.levelCheck > old.levelCheck){
         return true;
     }
-    if(current.endCheck == 4){
+    if(current.endCheck == 4 && current.endCheck != old.endCheck){
         return true;
     }
     if(settings["VHSSplit"] && current.vhsCheck != old.vhsCheck){
