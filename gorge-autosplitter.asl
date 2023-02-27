@@ -2,7 +2,7 @@ state("Gorge-Win64-Shipping")
 {
 	int pauseCheck: 0x035E03C0, 0x90, 0x8CC; // not paused = 1
 	int loadCheck: 0x034E2EB0, 0xAC8, 0x38, 0x2C; // in certain loads that pauseCheck doesn't pick up on = 0
-	int chapterCheck: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
+	byte chapterCheck: 0x034FBC98, 0x970, 0x0, 0xE0, 0x38; // wake-up to primary are 0 to 5. sometimes when entering a chapter after opening the game, the value can be 0 even if you're not in wake-up, but it reverts after entering a new chapter/rewinding chapter. this can cause problems in obscure scenarios
 	float vhsCheck: 0x034FBD38, 0x68, 0x4D0, 0x560, 0x168, 0x3C; // changes when a vhs tape is collected, does not require achievements to be reset
 	byte challengeCheck: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
 	int mugCheck: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
@@ -68,7 +68,7 @@ startup
 
 reset
 {
-	if(settings["Reset"] && current.loadCheck==0 && current.chapterCheck==256 && current.pauseCheck==1){ // the pause check isn't necessary here, just makes the place that it resets more consistent when you're resetting after just playing wake-up vs resetting after just playing a different chapter
+	if(settings["Reset"] && current.loadCheck==0 && current.chapterCheck==0 && current.pauseCheck==1){ // the pause check isn't necessary here, just makes the place that it resets more consistent when you're resetting after just playing wake-up vs resetting after just playing a different chapter
 		return true;
 	}
 	if(settings["Reset"] && settings["ILMode"] && current.loadCheck==0 && current.pauseCheck==1){
@@ -78,7 +78,7 @@ reset
 
 start
 {
-	if(current.pauseCheck==1 && current.loadCheck!=0 && current.chapterCheck==256){
+	if(current.pauseCheck==1 && current.loadCheck!=0 && (current.chapterCheck==256||current.chapterCheck==0)){ // could technically start at the wrong time if you enter a chapter other than wakeup as soon as you start the game & get unlucky, but i cant think of a fix for that
 		return true;
 	}
 	if(settings["ILMode"] && current.pauseCheck==1 && current.loadCheck!=0){
@@ -88,22 +88,22 @@ start
 
 split
 {
-	if(settings["WakeUp"] && old.chapterCheck==256 && current.chapterCheck!=old.chapterCheck){
+	if(settings["WakeUp"] && old.chapterCheck==0 && current.chapterCheck!=old.chapterCheck){
 		return true;
 	}
-	if(settings["Gorge"] && old.chapterCheck==257 && current.chapterCheck!=old.chapterCheck){
+	if(settings["Gorge"] && old.chapterCheck==1 && current.chapterCheck!=old.chapterCheck){
 		return true;
 	}
-	if(settings["Caves"] && old.chapterCheck==258 && current.chapterCheck!=old.chapterCheck){
+	if(settings["Caves"] && old.chapterCheck==2 && current.chapterCheck!=old.chapterCheck){
 		return true;
 	}
-	if(settings["Reservoir"] && old.chapterCheck==259 && current.chapterCheck!=old.chapterCheck){
+	if(settings["Reservoir"] && old.chapterCheck==3 && current.chapterCheck!=old.chapterCheck){
 		return true;
 	}
-	if(settings["Secondary"] && old.chapterCheck==260 && current.chapterCheck!=old.chapterCheck){
+	if(settings["Secondary"] && old.chapterCheck==4 && current.chapterCheck!=old.chapterCheck){
 		return true;
 	}
-	if(settings["Primary"] && old.chapterCheck==261 && current.chapterCheck==256) vars.stopwatch.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops
+	if(settings["Primary"] && old.chapterCheck==5 && current.chapterCheck==256) vars.stopwatch.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops
 	if(vars.stopwatch.ElapsedMilliseconds>=3000) {
 		vars.stopwatch.Reset();
 		return true;
