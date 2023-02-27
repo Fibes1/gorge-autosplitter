@@ -78,7 +78,7 @@ reset
 
 start
 {
-	if(current.pauseCheck==1 && current.loadCheck!=0 && (current.chapterCheck==256||current.chapterCheck==0)){ // could technically start at the wrong time if you enter a chapter other than wakeup as soon as you start the game & get unlucky, but i cant think of a fix for that
+	if(current.pauseCheck==1 && current.loadCheck!=0 && current.chapterCheck==0){
 		return true;
 	}
 	if(settings["ILMode"] && current.pauseCheck==1 && current.loadCheck!=0){
@@ -103,7 +103,7 @@ split
 	if(settings["Secondary"] && old.chapterCheck==4 && current.chapterCheck!=old.chapterCheck){
 		return true;
 	}
-	if(settings["Primary"] && old.chapterCheck==5 && current.chapterCheck==256) vars.stopwatch.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops
+	if(settings["Primary"] && old.chapterCheck==5 && current.chapterCheck==0) vars.stopwatch.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 0 before splitting - this stops the timer at the same time that the igt stops
 	if(vars.stopwatch.ElapsedMilliseconds>=3000) {
 		vars.stopwatch.Reset();
 		return true;
