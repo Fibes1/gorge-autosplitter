@@ -74,7 +74,7 @@ start
 
 split
 {
-	if(settings["ChapterSplit"] && current.chapterCheck > old.chapterCheck){
+	if(settings["Chapter"] && current.chapterCheck > old.chapterCheck){
 		return true;
 	}
 	if(old.chapterCheck!=256 && current.chapterCheck==256) vars.stopwatch.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops
