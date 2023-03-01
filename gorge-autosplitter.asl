@@ -2,8 +2,7 @@ state("Gorge-Win64-Shipping")
 {
 	int pauseCheck: 0x035E03C0, 0x90, 0x8CC; // not paused = 1
 	int loadCheck: 0x034E2EB0, 0xAC8, 0x38, 0x2C; // in certain loads that pauseCheck doesn't pick up on = 0
-	int levelCheck: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261
-	int endCheck: 0x034FBD38, 0x368, 0x410, 0x110, 0x7D8; // on end screen = 4
+	int chapterCheck: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
 	float vhsCheck: 0x034FBD38, 0x68, 0x4D0, 0x560, 0x168, 0x3C; // changes when a vhs tape is collected, does not require achievements to be reset
 	byte challengeCheck: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
 	int mugCheck: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
@@ -13,8 +12,7 @@ state("Gorge-Win64-Shipping")
 
 startup
 {
-	settings.Add("ILMode", false, "IL Mode");
-	settings.Add("AreaSplit", true, "Split when entering a new area");
+	settings.Add("Chapter", true, "Split upon completing a chapter");
 
 	settings.Add("VHSSplit", false, "VHS tape splits");
 	settings.Add("VHS1Split", false, "Split on each VHS tape collected", "VHSSplit");
@@ -36,11 +34,15 @@ startup
 	settings.Add("Chal1Split", false, "Split on each challenge course completed", "ChalSplit");
 	settings.Add("Chal7Split", false, "Split after completing all challenge courses", "ChalSplit");
 
-	settings.SetToolTip("ILMode", "Enables resetting when rewinding chapter or exiting to the main menu");
+	settings.Add("FullReset", true, "Reset automatically when entering wake-up (Fullgame)");
+	settings.Add("ILReset", false, "Reset automatically when entering any level or rewinding chapter (ILs)");
+
 	settings.SetToolTip("VHSSplit", "Don't select more than 1");
 	settings.SetToolTip("MugSplit", "Don't select more than 1");
 	settings.SetToolTip("LookSplit", "Don't select more than 1");
 	settings.SetToolTip("ChalSplit", "Don't select more than 1");
+
+	vars.stopwatch = new Stopwatch();
 
 	if (timer.CurrentTimingMethod == TimingMethod.RealTime){
 		var mbox = MessageBox.Show(
@@ -55,7 +57,10 @@ startup
 
 reset
 {
-	if(settings["ILMode"] && current.loadCheck==0){
+	if(settings["FullReset"] && current.loadCheck==0 && current.chapterCheck==256 && current.pauseCheck==1){ // the pause check isn't necessary here, just makes the place that it resets more consistent when you're resetting after just playing wake-up vs resetting after just playing a different chapter
+		return true;
+	}
+	if(settings["ILReset"] && current.loadCheck==0 && current.pauseCheck==1){
 		return true;
 	}
 }
@@ -69,10 +74,12 @@ start
 
 split
 {
-	if(settings["AreaSplit"] && current.levelCheck > old.levelCheck){
+	if(settings["ChapterSplit"] && current.chapterCheck > old.chapterCheck){
 		return true;
 	}
-	if(current.endCheck == 4 && current.endCheck != old.endCheck){
+	if(old.chapterCheck!=256 && current.chapterCheck==256) vars.stopwatch.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops
+	if(vars.stopwatch.ElapsedMilliseconds>=3000) {
+		vars.stopwatch.Reset();
 		return true;
 	}
 	if(settings["VHS1Split"] && current.vhsCheck != old.vhsCheck){
