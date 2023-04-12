@@ -3,11 +3,10 @@ state("Gorge-Win64-Shipping")
 	int pauseCheck: 0x035E03C0, 0x90, 0x8CC; // not paused = 1
 	int loadCheck: 0x034E2EB0, 0xAC8, 0x38, 0x2C; // in certain loads that pauseCheck doesn't pick up on = 0
 	int chapterCheck: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
-	float vhsCheck: 0x034FBD38, 0x68, 0x4D0, 0x560, 0x168, 0x3C; // changes when a vhs tape is collected, does not require achievements to be reset
 	byte challengeCheck: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
 	int mugCheck: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
 	int lookoutCheck: 0x035E0228, 0x8, 0x360, 0xD0; // number of lookouts visited
-	int vhs2Check: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
+	int vhsCheck: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
 }
 
 startup
@@ -82,13 +81,13 @@ split
 		vars.stopwatch.Reset();
 		return true;
 	}
-	if(settings["VHS1Split"] && current.vhsCheck != old.vhsCheck){
+	if(settings["VHS1Split"] && current.vhsCheck > old.vhsCheck){
 		return true;
 	}
 	if((settings["VHS7Split"]||settings["VHSachSplit"]) && old.vhs2Check==6 && current.vhs2Check==7){
 		return true;
 	}
-	if(settings["VHSachSplit"] && old.vhs2Check==0 && current.vhs2Check==1){
+	if(settings["VHSachSplit"] && old.vhsCheck==0 && current.vhsCheck==1){
 		return true;
 	}
 	if(settings["Chal1Split"] && current.challengeCheck > old.challengeCheck){
