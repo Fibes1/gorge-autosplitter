@@ -30,6 +30,7 @@ startup
 	settings.Add("DP", true, "Completed Dam - Primary", "Location");
 	settings.Add("MidChapter", false, "Specific checkpoints", "Location");
 
+	settings.Add("/00_tutorial.00_tutorial:PersistentLevel.BP_ToggleCheckPoint88", false, "Wake-Up - Wall Jumps Section", "MidChapter");
 	settings.Add("/00_tutorial.00_tutorial:PersistentLevel.BP_ToggleCheckPoint99", false, "Wake-Up - Oil canister", "MidChapter");
 	settings.Add("/01_gorge.01_gorge:PersistentLevel.BP_ToggleCheckPoint20", false, "Gorge - Spinning platform", "MidChapter");
 	settings.Add("/02_cave.02_cave:PersistentLevel.BP_ToggleCheckPoint19", false, "Caves - Spiral room", "MidChapter");
@@ -39,9 +40,12 @@ startup
 	settings.Add("/03_cliff.03_cliff:PersistentLevel.BP_ToggleCheckPoint4", false, "Reservoir - Main area", "MidChapter");
 	settings.Add("/03_cliff.03_cliff:PersistentLevel.BP_ToggleCheckPoint9", false, "Reservoir - After indoors section", "MidChapter");
 	settings.Add("/03_cliff.03_cliff:PersistentLevel.BP_ToggleCheckPoint11", false, "Reservoir - Gate", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint99", false, "Secondary Left Side - Level 4", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint16", false, "Secondary Right Side - Before launches", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint18", false, "Secondary Right Side - Upper Area", "MidChapter");
+	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint99", false, "Secondary - Left Side Level 4", "MidChapter");
+	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint104", false, "Secondary - Left Side Level 7", "MidChapter");
+	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint10", false, "Secondary - Left Side Key Room", "MidChapter");
+	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint16", false, "Secondary - Right Side Before launches", "MidChapter");
+	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint18", false, "Secondary - Right Side Upper Area", "MidChapter");
+	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint28", false, "Secondary - Right Side Key Room", "MidChapter");
 	settings.Add("Key1", false, "Secondary - First key inserted", "MidChapter");
 	settings.Add("Key2", false, "Secondary - Second key inserted", "MidChapter");
 	settings.Add("/05_finally_a.05_finally_a:PersistentLevel.BP_ToggleCheckPoint2", false, "Primary - Pipe room", "MidChapter");
