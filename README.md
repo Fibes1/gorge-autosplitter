@@ -1,6 +1,15 @@
 # Gorge Autosplitter
 An autosplitter & load remover for Gorge.
 
-By default, the timer will start after selecting a chapter and split upon entering a new chapter and when beating the game. There are also options to reset automatically and to split upon making progress towards different achievements, such as collecting a vhs tape or breaking a certain amounnt of mugs.
+By default:
+- Starts when entering Wake-Up
+- Splits when entering a new chapter
+- Splits when finishing the game
+- Resets when entering Wake-Up with the timer running
+- Removes loads, pauses, and time on the main menu
 
-Loads, pauses and time on the main menu are automatically removed.
+Optionally:
+- Can start when entering any chapter
+- Can reset when entering any chapter
+- Can split on specific checkpoints mid-chapter
+- Can split on making certain amounts of progress towards different achievements
