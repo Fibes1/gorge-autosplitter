@@ -134,6 +134,7 @@ update
 onStart
 {
 	current.keys = 0;
+	vars.dpTimer.Reset();
 }
 
 start
