@@ -160,10 +160,10 @@ split
 			current.keys++;
 		}
 	}
-	if((settings["ILMode"]||settings["Basic"]) && current.chapterCheck>old.chapterCheck){
+	if((settings["ILMode"] || settings["Basic"]) && current.chapterCheck>old.chapterCheck){
 		return true;
 	}
-	if(settings["DP"] && (old.chapterCheck==261||old.chapterCheck==260) && current.chapterCheck==256) vars.dpTimer.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops. last chapter must be primary or secondary as these are the only realistic scenarios, and it prevents accidental splits in obscure scenarios, like when re-entering wake-up
+	if((settings["DP"] || settings["ILMode"] || settings["Basic"]) && (old.chapterCheck==261 || old.chapterCheck==260) && current.chapterCheck==256) vars.dpTimer.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops. last chapter must be primary or secondary as these are the only realistic scenarios, and it prevents accidental splits in obscure scenarios, like when re-entering wake-up
 	if(vars.dpTimer.ElapsedMilliseconds>=3000){
 		vars.dpTimer.Reset();
 		return true;
