@@ -214,11 +214,14 @@ split
 
 reset
 {
-	if(settings["WUReset"] && current.loadCheck==0 && current.pauseCheck==1 && current.checkpointString.ToString()=="/zz_persistent.zz_persistent:PersistentLevel.zAreaSpawnPoint_tut"){
-		return true;
-	}
-	if((settings["ILMode"] || settings["Reset"]) && current.loadCheck==0 && current.pauseCheck==1 && vars.firstCP.Contains(current.checkpointString.ToString())){
-		return true;
+	if(current.loadCheck==0 && current.pauseCheck==1){
+		if((settings["ILMode"] || settings["Reset"]) && vars.firstCP.Contains(current.checkpointString.ToString())){
+			return true;
+		}
+		if(settings["WUReset"] && current.checkpointString.ToString()=="/zz_persistent.zz_persistent:PersistentLevel.zAreaSpawnPoint_tut"){
+			return true;
+		}
+		current.keys = 0; // resets keys even if it's during the same run, allowing for longer runs which revisit secondary to split again on keys
 	}
 }
 
