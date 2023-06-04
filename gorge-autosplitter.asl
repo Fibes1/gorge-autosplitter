@@ -1,239 +1,189 @@
 state("Gorge-Win64-Shipping")
 {
-	int pauseCheck: 0x035E03C0, 0x90, 0x8CC; // not paused = 1
-	int loadCheck: 0x034E2EB0, 0xAC8, 0x38, 0x2C; // in certain loads that pauseCheck doesn't pick up on = 0
-	int chapterCheck: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
-	byte challengeCheck: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
-	byte mugCheck: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
-	byte lookoutCheck: 0x035E0228, 0x8, 0x360, 0xD0; // number of lookouts visited
-	byte vhsCheck: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
+    int pause: 0x035E03C0, 0x90, 0x8CC; // not paused = 1
+    int load: 0x034E2EB0, 0xAC8, 0x38, 0x2C; // loading or main menu = 0
+    double checkpoint: 0x034F9308, 0x28, 0x1C0, 0x100, 0x2D4; // unique number for the current checkpoint, theres a lot of these addresses but this seems to be the only one that has no repeats. doesnt change when rewinding chapter in most cases
+    int chapter: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
+    byte mug: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
+    byte vhs: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
+    byte challenge: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
+    byte lookout: 0x035E0228, 0x8, 0x360, 0xD0; // number of lookouts visited
 }
 
 startup
 {
-	settings.Add("Settings", true, "Settings");
-	settings.Add("Location", true, "Location Splits");
-	settings.Add("Achievement", false, "Achievement Splits");
+    settings.Add("location", true, "Location Splits");
+        settings.Add("wakeup", true, "Wake-Up", "location");
+        settings.CurrentDefaultParent = "wakeup";
+            settings.Add("256", true, "First Checkpoint");
+            settings.Add("3.40433574423129E+27", false, "Wall Jumps Section");
+            settings.Add("1.78263407272949E+29", false, "Oil Canister");
+            settings.Add("6.9324658484767E+29", false, "Last Checkpoint");
+        settings.Add("gorge", true, "Gorge", "location");
+        settings.CurrentDefaultParent = "gorge";
+            settings.Add("257", true, "First Checkpoint");
+            settings.Add("-1.35399782960504E+27", false, "Spinning Platform");
+            settings.Add("-2.32113871659486E+26", false, "Last Checkpoint");
+        settings.Add("caves", true, "Caves", "location");
+        settings.CurrentDefaultParent = "caves";
+            settings.Add("258", true, "First Checkpoint");
+            settings.Add("-4.11986633182541E+30", false, "Spiral Room");
+            settings.Add("-1.18842290782924E+30", false, "Next Spiral");
+            settings.Add("-6.33825769878899E+29", false, "Slide");
+            settings.Add("-1.48552878193047E+28", false, "Slide 2");
+            settings.Add("-2.72371134114874E+28", false, "Last Checkpoint");
+        settings.Add("reservoir", true, "Reservoir", "location");
+        settings.CurrentDefaultParent = "reservoir";
+            settings.Add("259", true, "First Checkpoint");
+            settings.Add("-3.29589306792851E+31", false, "Main Area");
+            settings.Add("-1.90147665418145E+31", false, "Cage");
+            settings.Add("-1.16623915483116E+32", false, "Gate");
+            settings.Add("-1.59724035845068E+32", false, "Last Checkpoint");
+        settings.Add("secondary", true, "Dam - Secondary", "location");
+        settings.CurrentDefaultParent = "secondary";
+            settings.Add("260", true, "First Checkpoint");
+            settings.Add("-9.12708913335691E+32", false, "Left Side Level 4");
+            settings.Add("-1.87612409126619E+32", false, "Left Side Level 7");
+            settings.Add("-9.38062045634573E+31", false, "Left Side Key Room");
+            settings.Add("-8.11296769018935E+33", false, "Right Side Launches");
+            settings.Add("-4.82721540789893E+33", false, "Right Side Upper Area");
+            settings.Add("-2.35276047555408E+33", false, "Right Side Key Room");
+            settings.Add("key1", false, "Inserted Key 1");
+            settings.Add("key2", false, "Inserted Key 2");
+        settings.Add("primary", true, "Dam - Primary", "location");
+        settings.CurrentDefaultParent = "primary";
+            settings.Add("261", true, "First Checkpoint");
+            settings.Add("-1.71994910208778E+34", false, "Pipe Room");
+            settings.Add("-1.33052683531004E+34", false, "Seesaw Room End");
+            settings.Add("-1.39543054525592E+34", false, "Slide");
+            settings.Add("-1.7524004609629E+34", false, "Canister Room");
+            settings.Add("end", true, "Game Completed");
 
-	settings.Add("WUStart", true, "Start when entering Wake-Up", "Settings");
-	settings.Add("WUReset", true, "Reset when entering Wake-Up", "Settings");
-	settings.Add("Start", false, "Start when entering any chapter", "Settings");
-	settings.Add("Reset", false, "Reset when entering any chapter", "Settings");
-	settings.Add("Basic", false, "Basic chapter splitting", "Settings");
-	settings.Add("ILMode", false, "IL Mode", "Settings");
+    settings.CurrentDefaultParent = null;
+    settings.Add("achievement", false, "Achievement Splits");
+        settings.Add("bsl", false, "Boom Shaka Laka", "achievement");
+        settings.Add("jpc", false, "Jean-Paul Canister", "achievement");
+        settings.Add("misd", false, "Minor Souvenir Destruction", "achievement");
+        settings.Add("masd", false, "Major Souvenir Destruction", "achievement");
+            settings.Add("m10", false, "Split every 10 mugs", "masd");
+            settings.Add("m25", false, "Split every 25 mugs", "masd");
+            settings.Add("m50", false, "Split every 50 mugs", "masd");
+        settings.Add("sac", false, "Starting a Collection", "achievement");
+        settings.Add("ftc", false, "Finishing the Collection", "achievement");
+            settings.Add("v", false, "Split on every tape", "ftc");
+        settings.Add("llo", false, "Lookout Look Out", "achievement");
+            settings.Add("l", false, "Split on every lookout", "llo");
+        settings.Add("ftb", false, "For the Birdies", "achievement");
+            settings.Add("c", false, "Split on every course completed", "ftb");
 
-	settings.Add("A/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint78", true, "Entering Gorge", "Location");
-	settings.Add("A/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint79", true, "Entering Caves", "Location");
-	settings.Add("A/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint80", true, "Entering Reservoir", "Location");
-	settings.Add("A/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint81_0", true, "Entering Dam - Secondary", "Location");
-	settings.Add("A/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint83", true, "Entering Dam - Primary", "Location");
-	settings.Add("DP", true, "Completed Dam - Primary", "Location");
-	settings.Add("MidChapter", false, "Specific checkpoints", "Location");
-
-	settings.Add("/00_tutorial.00_tutorial:PersistentLevel.BP_ToggleCheckPoint88", false, "Wake-Up - Wall Jumps Section", "MidChapter");
-	settings.Add("/00_tutorial.00_tutorial:PersistentLevel.BP_ToggleCheckPoint99", false, "Wake-Up - Oil canister", "MidChapter");
-	settings.Add("/01_gorge.01_gorge:PersistentLevel.BP_ToggleCheckPoint20", false, "Gorge - Spinning platform", "MidChapter");
-	settings.Add("/02_cave.02_cave:PersistentLevel.BP_ToggleCheckPoint19", false, "Caves - Spiral room", "MidChapter");
-	settings.Add("/02_cave.02_cave:PersistentLevel.BP_ToggleCheckPoint26", false, "Caves - Next spiral", "MidChapter");
-	settings.Add("/02_cave.02_cave:PersistentLevel.BP_ToggleCheckPoint28", false, "Caves - Slide", "MidChapter");
-	settings.Add("/02_cave.02_cave:PersistentLevel.BP_ToggleCheckPoint36", false, "Caves - End section", "MidChapter");
-	settings.Add("/03_cliff.03_cliff:PersistentLevel.BP_ToggleCheckPoint4", false, "Reservoir - Main area", "MidChapter");
-	settings.Add("/03_cliff.03_cliff:PersistentLevel.BP_ToggleCheckPoint9", false, "Reservoir - After indoors section", "MidChapter");
-	settings.Add("/03_cliff.03_cliff:PersistentLevel.BP_ToggleCheckPoint11", false, "Reservoir - Gate", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint99", false, "Secondary - Left Side Level 4", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint104", false, "Secondary - Left Side Level 7", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint10", false, "Secondary - Left Side Key Room", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint16", false, "Secondary - Right Side Before launches", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint18", false, "Secondary - Right Side Upper Area", "MidChapter");
-	settings.Add("/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint28", false, "Secondary - Right Side Key Room", "MidChapter");
-	settings.Add("Key1", false, "Secondary - First key inserted", "MidChapter");
-	settings.Add("Key2", false, "Secondary - Second key inserted", "MidChapter");
-	settings.Add("/05_finally_a.05_finally_a:PersistentLevel.BP_ToggleCheckPoint2", false, "Primary - Pipe room", "MidChapter");
-	settings.Add("/05_finally_c.05_finally_c:PersistentLevel.BP_ToggleCheckPoint4", false, "Primary - After seesaw room", "MidChapter");
-	settings.Add("/05_finally_c.05_finally_c:PersistentLevel.BP_ToggleCheckPoint7", false, "Primary - Slide", "MidChapter");
-	settings.Add("/05_finally_d.05_finally_d:PersistentLevel.BP_ToggleCheckPoint11", false, "Primary - End section", "MidChapter");
-
-	settings.Add("VHSSplit", false, "VHS tapes", "Achievement");
-	settings.Add("VHS1Split", false, "Split on each VHS tape collected", "VHSSplit");
-	settings.Add("VHS7Split", false, "Split after collecting all VHS tapes", "VHSSplit");
-	settings.Add("VHSachSplit", false, "Split when getting the VHS tape achievements", "VHSSplit");
-
-	settings.Add("MugSplit", false, "Mugs", "Achievement");
-	settings.Add("Mug10Split", false, "Split every 10 mugs collected", "MugSplit");
-	settings.Add("Mug25Split", false, "Split every 25 mugs collected", "MugSplit");
-	settings.Add("Mug50Split", false, "Split every 50 mugs collected", "MugSplit");
-	settings.Add("Mug100Split", false, "Split after collecting 100 mugs", "MugSplit");
-	settings.Add("MugachSplit", false, "Split when getting the mug achievements", "MugSplit");
-
-	settings.Add("LookSplit", false, "Lookout splits", "Achievement");
-	settings.Add("Look1Split", false, "Split on each lookout visited", "LookSplit");
-	settings.Add("Look3Split", false, "Split after visiting all lookouts", "LookSplit");
-
-	settings.Add("ChalSplit", false, "Challenge course splits", "Achievement");
-	settings.Add("Chal1Split", false, "Split on each challenge course completed", "ChalSplit");
-	settings.Add("Chal7Split", false, "Split after completing all challenge courses", "ChalSplit");
-
-	settings.SetToolTip("WUStart", "The timer will start when entering Wake-Up.");
-	settings.SetToolTip("WUReset", "The timer will automatically reset when entering Wake-Up from chapter select, or when rewinding chapter in Wake-Up.");
-	settings.SetToolTip("Start", "The timer will start when entering any chapter, rather than just Wake-Up. \n"+"Enabled automatically for IL Mode.");
-	settings.SetToolTip("Reset", "The timer will automatically reset when entering any chapter, rather than just Wake-Up. \n"+"Enabled automatically for IL Mode.");
-	settings.SetToolTip("Basic", "The timer will: \n"+"- Split when entering any chapter, regardless of settings \n"+"- Split earlier than usual when completing the chapter for accuracy \n"+"- Split on any checkpoint rather than just the first \n"+"Enabled automatically for IL Mode.");
-	settings.SetToolTip("ILMode","Enables the settings: \n"+"- Start when entering any chapter \n"+"- Reset when entering any chapter \n"+"- Basic chapter splitting \n"+"This is a separate setting for convenience.");
-	settings.SetToolTip("Achievement", "Don't select more than 1 option from each section, or the timer may split multiple times at once. \n"+"You must reset your achievements for the splits to work, e.g. if you already have all VHS tapes, then collecting one again will not split.");
-	settings.SetToolTip("VHSSplit", "Don't select more than 1 option");
-	settings.SetToolTip("MugSplit", "Don't select more than 1 option");
-	settings.SetToolTip("LookSplit", "Don't select more than 1 option");
-	settings.SetToolTip("ChalSplit", "Don't select more than 1 option");
-
-	vars.dpTimer = new Stopwatch();
-	vars.firstCP = new List<string>(){
-	"/zz_persistent.zz_persistent:PersistentLevel.zAreaSpawnPoint_tut", // wake-up
-	"/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint78", // gorge
-	"/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint79", // caves
-	"/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint80", // reservoir
-	"/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint81_0", // secondary
-	"/zz_persistent.zz_persistent:PersistentLevel.BP_ToggleCheckPoint83", // primary
-	};
-	vars.ten = new List<int>(){10,20,30,40,50,60,70,80,90,100};
-	vars.tfive = new List<int>(){25,50,75,100};
-	vars.fifty = new List<int>(){50,100};
-	vars.mugach = new List<int>(){5,100};
-	vars.vhsach = new List<int>(){1,7};
-
-	if(timer.CurrentTimingMethod == TimingMethod.RealTime){ // message box prompt to switch to game time comparison
+	if(timer.CurrentTimingMethod==TimingMethod.RealTime){ // message box prompt to switch to game time comparison
 		var mbox = MessageBox.Show(
 			"To remove load/pause time, you must be comparing to game time rather than real time. Would you like to switch to game time?",
 			"Gorge Autosplitter",
 			MessageBoxButtons.YesNo);
 
-		if(mbox == DialogResult.Yes)
+		if(mbox==DialogResult.Yes)
 			timer.CurrentTimingMethod = TimingMethod.GameTime;
 	}
 }
 
 init
 {
-	current.checkpointString = null;
-	current.lastSaved = null;
-	current.keys = 0;
-}
-
-update
-{
-// this reads the save file for the current checkpoint
-// the save file is used since chapterCheck can sometimes default to 0 and can't do more specific splitting, and any current checkpoint memory addresses don't change with rewind chapter & have some repeats
-// checking when the file was last saved is used since reading the file whilst its being written to by the game can sometimes cause the game to not save at all
-	string path = Environment.GetEnvironmentVariable("AppData")+"\\..\\local\\Gorge\\Saved\\SaveGames\\default_slot.sav"; // get save file path
-	current.lastSaved = File.GetLastWriteTime(path); // get time of last save
-	if(current.lastSaved!=old.lastSaved){
-		string save = File.ReadAllText(path); // reads the save file
-		current.checkpointString = save.Substring(save.LastIndexOf("Maps")+4, save.LastIndexOf("Checked")-save.LastIndexOf("Maps")-9); // gets the text (roughly) between the last appearance of "Maps" and the last appearance of "Checked", which is the current checkpoint string. pretty scuffed, can probably be improved
-	}
-}
-
-onStart
-{
-	current.keys = 0;
-	vars.dpTimer.Reset();
+    current.keys = 0;
+    vars.startchapter = 0;
+    vars.end = 0; // ==1 during the 3 seconds before the end in dam primary, ==2 until a new chapter is entered (to prevent 2 splits in longer runs)
 }
 
 start
 {
-	if(settings["WUStart"] && current.pauseCheck==1 && current.loadCheck!=0 && current.checkpointString.ToString()=="/zz_persistent.zz_persistent:PersistentLevel.zAreaSpawnPoint_tut"){
-		return true;
-	}
-	if((settings["ILMode"] || settings["Start"]) && current.pauseCheck==1 && current.loadCheck!=0 && vars.firstCP.Contains(current.checkpointString.ToString())){
-		return true;
-	}
+    if(old.load==0 && current.load!=0){
+        current.keys = 0;
+        vars.end = 0;
+        vars.startchapter = current.chapter; // used for resetting - has the problem of current.chapter potentially being 0 if the game was just started
+        return true;
+    }
 }
 
 split
 {
-	if(current.checkpointString!=old.checkpointString){
-		if(settings[current.checkpointString.ToString()]){
-			return true;
-		}
-		if(!settings["ILMode"] && !settings["Basic"] && settings["A"+current.checkpointString.ToString()]){ // disables splits at the start of chapters if IL Mode/Basic chapter splitting is on, since those are then handled separately for accuracy
-			return true;
-		}
-		if(current.checkpointString.ToString()=="/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPointSmartDam_2" && old.checkpointString.ToString()!="/04_dam.04_dam:PersistentLevel.BP_ToggleCheckPoint3"){ // keeps track of keys inserted in secondary dam
-			current.keys++;
-		}
-	}
-	if((settings["ILMode"] || settings["Basic"]) && current.chapterCheck>old.chapterCheck){
-		return true;
-	}
-	if((settings["DP"] || settings["ILMode"] || settings["Basic"]) && (old.chapterCheck==261 || old.chapterCheck==260) && current.chapterCheck==256) vars.dpTimer.Restart(); // the stopwatch waits 3 seconds after the chapter value is set back to 256 before splitting - this stops the timer at the same time that the igt stops. last chapter must be primary or secondary as these are the only realistic scenarios, and it prevents accidental splits in obscure scenarios, like when re-entering wake-up
-	if(vars.dpTimer.ElapsedMilliseconds>=3000){
-		vars.dpTimer.Reset();
-		return true;
-	}
-	if(settings["Key1"] && current.keys==1 && old.keys==0){
-		return true;
-	}
-	if(settings["Key2"] && current.keys==2 && old.keys==1){
-		return true;
-	}
-	if(settings["VHS1Split"] && current.vhsCheck>old.vhsCheck){
-		return true;
-	}
-	if((settings["VHS7Split"]) && old.vhsCheck==6 && current.vhsCheck==7){
-		return true;
-	}
-	if(settings["VHSachSplit"] && current.vhsCheck!=old.vhsCheck && vars.vhsach.Contains(current.vhsCheck)){
-		return true;
-	}
-	if(settings["Chal1Split"] && current.challengeCheck>old.challengeCheck){
-		return true;
-	}
-	if(settings["Chal7Split"] && old.challengeCheck==6 && current.challengeCheck==7){
-		return true;
-	}
-	if(settings["Mug10Split"] && current.mugCheck!=old.mugCheck && vars.ten.Contains(current.mugCheck)){
-		return true;
-	}
-	if(settings["Mug25Split"] && current.mugCheck!=old.mugCheck && vars.tfive.Contains(current.mugCheck)){
-		return true;
-	}
-	if(settings["Mug50Split"] && current.mugCheck!=old.mugCheck && vars.fifty.Contains(current.mugCheck)){
-		return true;
-	}
-	if(settings["Mug100Split"] && current.mugCheck==100 && old.mugCheck==99){
-		return true;
-	}
-	if(settings["MugachSplit"] && current.mugCheck!=old.mugCheck && vars.mugach.Contains(current.mugCheck)){
-		return true;
-	}
-	if(settings["Look1Split"] && current.lookoutCheck>old.lookoutCheck){
-		return true;
-	}
-	if(settings["Look3Split"] && current.lookoutCheck==3 && old.lookoutCheck==2){
-		return true;
-	}
+    if(current.checkpoint!=old.checkpoint){
+        if(settings[current.checkpoint.ToString()]){
+            return true;
+        }
+        if(old.checkpoint.ToString()!="-8.76200479924032E+33" && current.checkpoint.ToString()=="-8.7620047991307E+33"){
+            current.keys++;
+            return settings["key"+current.keys.ToString()];
+        }
+    }
+    if(settings["end"] && current.load!=0 && current.chapter==256 && (old.chapter==261 || old.chapter==260)) vars.end = 1; // sets a variable when the chapter gets changed back to 256
+    if(current.pause!=1 && vars.end==1){ // splits when the game is then paused, which after the variable is set would then have to be the end screen
+        vars.end = 2;
+        vars.startchapter = 0; // for longer runs which might re-enter the starting chapter
+        return true;
+    }
+    if(current.chapter!=old.chapter){
+        current.keys = 0;
+        if(vars.end==0 && settings[current.chapter.ToString()]){ // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
+            return true;
+        }
+        if(vars.end==2){
+            vars.end = 0;
+        }
+    }
+    if(current.mug>old.mug){
+        if(settings["misd"] && current.mug==5){
+            return true;
+        }
+        if(settings["m10"] && current.mug%10==0){
+            return true;
+        }
+        if(settings["m25"] && current.mug%25==0){
+            return true;
+        }
+        if(settings["m50"] && current.mug%50==0){
+            return true;
+        }
+        if(settings["masd"] && current.mug==100){
+            return true;
+        }
+    }
+    if(current.vhs>old.vhs){
+        if(settings["sac"] && current.vhs==1){
+            return true;
+        }
+        if(settings["v"]){
+            return true;
+        }
+        if(settings["ftb"] && current.vhs==7){
+            return true;
+        }
+    }
+    if(current.lookout>old.lookout){
+        if(settings["l"]){
+            return true;
+        }
+        if(settings["llo"] && current.lookout==3){
+            return true;
+        }
+    }
+    if(current.challenge>old.challenge){
+        if(settings["c"]){
+            return true;
+        }
+        if(settings["ftb"] && current.challenge==7){
+            return true;
+        }
+    }
 }
 
 reset
 {
-	if(current.loadCheck==0 && current.pauseCheck==1){
-		if((settings["ILMode"] || settings["Reset"]) && vars.firstCP.Contains(current.checkpointString.ToString())){
-			return true;
-		}
-		if(settings["WUReset"] && current.checkpointString.ToString()=="/zz_persistent.zz_persistent:PersistentLevel.zAreaSpawnPoint_tut"){
-			return true;
-		}
-		current.keys = 0; // resets keys even if it's during the same run, allowing for longer runs which revisit secondary to split again on keys
-	}
+    if(old.load==0 && current.load!=0 && current.chapter==vars.startchapter){
+        return true;
+    }
 }
 
 isLoading
 {
-	if(current.pauseCheck!=1){
-		return true;
-	}
-	if(current.loadCheck==0){
-		return true;
-	}
-	if(current.pauseCheck==1 && current.loadCheck!=0){
-		return false;
-	}
+    return current.pause!=1 || current.load==0;
 }
