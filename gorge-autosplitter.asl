@@ -61,8 +61,6 @@ startup
 
     settings.CurrentDefaultParent = null;
     settings.Add("achievement", false, "Achievement Splits");
-        settings.Add("bsl", false, "Boom Shaka Laka", "achievement");
-        settings.Add("jpc", false, "Jean-Paul Canister", "achievement");
         settings.Add("misd", false, "Minor Souvenir Destruction", "achievement");
         settings.Add("masd", false, "Major Souvenir Destruction", "achievement");
             settings.Add("m10", false, "Split every 10 mugs", "masd");
@@ -76,15 +74,15 @@ startup
         settings.Add("ftb", false, "For the Birdies", "achievement");
             settings.Add("c", false, "Split on every course completed", "ftb");
 
-	if(timer.CurrentTimingMethod==TimingMethod.RealTime){ // message box prompt to switch to game time comparison
-		var mbox = MessageBox.Show(
-			"To remove load/pause time, you must be comparing to game time rather than real time. Would you like to switch to game time?",
-			"Gorge Autosplitter",
-			MessageBoxButtons.YesNo);
+    if(timer.CurrentTimingMethod==TimingMethod.RealTime){ // message box prompt to switch to game time comparison
+        var mbox = MessageBox.Show(
+            "To remove load/pause time, you must be comparing to game time rather than real time. Would you like to switch to game time?",
+            "Gorge Autosplitter",
+            MessageBoxButtons.YesNo);
 
-		if(mbox==DialogResult.Yes)
-			timer.CurrentTimingMethod = TimingMethod.GameTime;
-	}
+        if(mbox==DialogResult.Yes)
+            timer.CurrentTimingMethod = TimingMethod.GameTime;
+    }
 }
 
 init
