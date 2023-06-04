@@ -1,5 +1,5 @@
 # Gorge Autosplitter
-An autosplitter & load remover for Gorge.
+An autosplitter for Gorge.
 
 - Starts when entering a chapter
 - Resets when re-entering the chapter you started in
