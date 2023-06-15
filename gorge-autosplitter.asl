@@ -121,7 +121,7 @@ split
     }
     if(current.chapter!=old.chapter){
         current.keys = 0;
-        if(vars.end==0 && settings[current.chapter.ToString()]){ // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
+        if(vars.end==0 && vars.startchapter!=current.chapter && settings[current.chapter.ToString()]){ // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
             return true;
         }
         if(vars.end==2){
