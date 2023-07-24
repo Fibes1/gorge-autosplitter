@@ -106,18 +106,22 @@ start
 split
 {
     if(current.checkpoint!=old.checkpoint){
+        if(settings[current.checkpoint.ToString()]){
+            return true;
+        }
         if(old.checkpoint.ToString()!="-8.76200479924032E+33" && current.checkpoint.ToString()=="-8.7620047991307E+33"){
             current.keys++;
             return settings["key"+current.keys.ToString()];
         }
-        return settings[current.checkpoint.ToString()];
     }
     if(current.chapter!=old.chapter){
+        current.keys = 0;
+        if(vars.end==0 && vars.startchapter!=current.chapter && settings[current.chapter.ToString()]){ // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
+            return true;
+        }
         if(vars.end==2){
             vars.end = 0;
         }
-        current.keys = 0;
-        return vars.end==0 && vars.startchapter!=current.chapter && settings[current.chapter.ToString()]; // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
     }
 
     if(settings["end"] && current.load!=0 && current.chapter==256 && (old.chapter==261 || old.chapter==260))
@@ -153,7 +157,9 @@ split
 
 reset
 {
-    return old.load==0 && current.load!=0 && current.chapter==vars.startchapter;
+    if(old.load==0 && current.load!=0 && current.chapter==vars.startchapter){
+        return true;
+    }
 }
 
 isLoading
