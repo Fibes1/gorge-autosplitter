@@ -120,65 +120,38 @@ split
         return true;
     }
     if(current.chapter!=old.chapter){
-        current.keys = 0;
-        if(vars.end==0 && vars.startchapter!=current.chapter && settings[current.chapter.ToString()]){ // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
-            return true;
-        }
         if(vars.end==2){
             vars.end = 0;
         }
+        current.keys = 0;
+        return vars.end==0 && vars.startchapter!=current.chapter && settings[current.chapter.ToString()]; // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
     }
     if(current.mug>old.mug){
-        if(settings["misd"] && current.mug==5){
-            return true;
-        }
-        if(settings["m10"] && current.mug%10==0){
-            return true;
-        }
-        if(settings["m25"] && current.mug%25==0){
-            return true;
-        }
-        if(settings["m50"] && current.mug%50==0){
-            return true;
-        }
-        if(settings["masd"] && current.mug==100){
-            return true;
-        }
+        return (settings["misd"] && current.mug==5)
+            || (settings["m10"] && current.mug%10==0)
+            || (settings["m25"] && current.mug%25==0)
+            || (settings["m50"] && current.mug%50==0)
+            || (settings["masd"] && current.mug==100);
     }
     if(current.vhs>old.vhs){
-        if(settings["sac"] && current.vhs==1){
-            return true;
-        }
-        if(settings["v"]){
-            return true;
-        }
-        if(settings["ftb"] && current.vhs==7){
-            return true;
-        }
+        return (settings["sac"] && current.vhs==1)
+            || (settings["v"])
+            || (settings["ftb"] && current.vhs==7);
     }
     if(current.lookout>old.lookout){
-        if(settings["l"]){
-            return true;
-        }
-        if(settings["llo"] && current.lookout==3){
-            return true;
-        }
+        return (settings["l"])
+            || (settings["llo"] && current.lookout==3);
     }
     if(current.challenge>old.challenge){
-        if(settings["c"]){
-            return true;
-        }
-        if(settings["ftb"] && current.challenge==7){
-            return true;
-        }
+        vars.startchapter = 1; // ensures the timer won't reset when entering a new course
+        return (settings["c"])
+            || (settings["ftb"] && current.challenge==7);
     }
 }
 
 reset
 {
-    if(old.load==0 && current.load!=0 && current.chapter==vars.startchapter){
-        return true;
-    }
+    return old.load==0 && current.load!=0 && current.chapter==vars.startchapter;
 }
 
 isLoading
