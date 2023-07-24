@@ -2,8 +2,10 @@ state("Gorge-Win64-Shipping")
 {
     int pause: 0x035E03C0, 0x90, 0x8CC; // not paused = 1
     int load: 0x034E2EB0, 0xAC8, 0x38, 0x2C; // loading or main menu = 0
+
     double checkpoint: 0x034F9308, 0x28, 0x1C0, 0x100, 0x2D4; // unique number for the current checkpoint, theres a lot of these addresses but this seems to be the only one that has no repeats. doesnt change when rewinding chapter in most cases
     int chapter: 0x035E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
+
     byte mug: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
     byte vhs: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
     byte challenge: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
@@ -79,7 +81,6 @@ startup
             "To remove load/pause time, you must be comparing to game time rather than real time. Would you like to switch to game time?",
             "Gorge Autosplitter",
             MessageBoxButtons.YesNo);
-
         if(mbox==DialogResult.Yes)
             timer.CurrentTimingMethod = TimingMethod.GameTime;
     }
@@ -105,19 +106,11 @@ start
 split
 {
     if(current.checkpoint!=old.checkpoint){
-        if(settings[current.checkpoint.ToString()]){
-            return true;
-        }
         if(old.checkpoint.ToString()!="-8.76200479924032E+33" && current.checkpoint.ToString()=="-8.7620047991307E+33"){
             current.keys++;
             return settings["key"+current.keys.ToString()];
         }
-    }
-    if(settings["end"] && current.load!=0 && current.chapter==256 && (old.chapter==261 || old.chapter==260)) vars.end = 1; // sets a variable when the chapter gets changed back to 256
-    if(current.pause!=1 && vars.end==1){ // splits when the game is then paused, which after the variable is set would then have to be the end screen
-        vars.end = 2;
-        vars.startchapter = 0; // for longer runs which might re-enter the starting chapter
-        return true;
+        return settings[current.checkpoint.ToString()];
     }
     if(current.chapter!=old.chapter){
         if(vars.end==2){
@@ -126,6 +119,15 @@ split
         current.keys = 0;
         return vars.end==0 && vars.startchapter!=current.chapter && settings[current.chapter.ToString()]; // the chapter is used for splitting on the first checkpoint rather than the checkpoint for accuracy
     }
+
+    if(settings["end"] && current.load!=0 && current.chapter==256 && (old.chapter==261 || old.chapter==260))
+        vars.end = 1; // sets a variable when the chapter gets changed back to 256
+    if(current.pause!=1 && vars.end==1){ // splits when the game is then paused, which after the variable is set would then have to be the end screen
+        vars.end = 2;
+        vars.startchapter = 0; // for longer runs which might re-enter the starting chapter
+        return true;
+    }
+
     if(current.mug>old.mug){
         return (settings["misd"] && current.mug==5)
             || (settings["m10"] && current.mug%10==0)
@@ -156,5 +158,6 @@ reset
 
 isLoading
 {
-    return current.pause!=1 || current.load==0;
+    return current.pause!=1
+        || current.load==0;
 }
