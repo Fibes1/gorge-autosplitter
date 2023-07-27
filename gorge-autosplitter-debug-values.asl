@@ -14,7 +14,6 @@ state("Gorge-Win64-Shipping")
 
     int cpcount: 0x035E03C0, 0x58, 0x498; // used for the gorge done quick achievement
     float freeze: 0x035E6D30, 0x100, 0x3B0, 0x70, 0x1B8, 0x248;
-    bool wallrun: 0x035EDFD8, 0xF8, 0x180, 0x18, 0xDE8;
 }
 
 startup
@@ -96,7 +95,6 @@ startup
         settings.Add("Chapter", false, "Chapter");
         settings.Add("Mugs", false, "Mugs");
         settings.Add("FreezeTimer", false, "Freeze Timer");
-        settings.Add("WRTimer", false, "Wall Run Timer");
 
     vars.SetTextComponent = (Action<string, string>)((id, text) =>
 	{
@@ -115,7 +113,6 @@ startup
 	});
 
     vars.FreezeTimer = new Stopwatch();
-    vars.WRTimer = new Stopwatch();
 
     vars.chapters = new Dictionary<int,string> 
 	{
@@ -146,24 +143,12 @@ init
     vars.posWatcher = new MemoryWatcher<Vector3f>(new DeepPointer(0x35BD180));
     vars.load2 = "False";
     vars.FreezeTime = 0;
-    vars.WRTime = 0;
 }
 
 update
 {
     vars.posWatcher.Update(game);
     current.pos = vars.posWatcher.Current;
-
-    if(current.wallrun && !old.wallrun){
-        vars.WRTimer.Restart();
-    }
-    if(current.wallrun){
-        vars.WRTime = Math.Truncate(99.9 - vars.WRTimer.ElapsedMilliseconds * 0.088);
-    }
-    else{
-        vars.WRTimer.Reset();
-        vars.WRTime = 0;
-    }
 
     if(current.freeze<1 && current.freeze>0){
         vars.FreezeTime = Math.Truncate(current.freeze*100);
@@ -197,7 +182,6 @@ update
     if(settings["Chapter"]) vars.SetTextComponent("Chapter:", chapter2);
     if(settings["Mugs"]) vars.SetTextComponent("Mugs:", current.mug.ToString());
     if(settings["FreezeTimer"]) vars.SetTextComponent("Freeze Timer:", vars.FreezeTime.ToString());
-    if(settings["WRTimer"]) vars.SetTextComponent("Wall Run Timer:", vars.WRTime.ToString());
 }
 
 start
