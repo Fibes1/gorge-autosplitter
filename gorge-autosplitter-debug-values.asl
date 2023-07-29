@@ -196,6 +196,14 @@ start
 
 split
 {
+    if(settings["end"] && current.load!=0 && current.chapter==256 && (old.chapter==261 || old.chapter==260))
+        vars.end = 1; // sets a variable when the chapter gets changed back to 256
+    if(current.pause!=1 && vars.end==1){ // splits when the game is then paused, which after the variable is set would then have to be the end screen
+        vars.end = 2;
+        vars.startchapter = 0; // for longer runs which might re-enter the starting chapter
+        return true;
+    }
+
     if(current.checkpoint!=old.checkpoint){
         if(settings[current.checkpoint.ToString()]){
             return true;
@@ -215,14 +223,6 @@ split
         }
     }
 
-    if(settings["end"] && current.load!=0 && current.chapter==256 && (old.chapter==261 || old.chapter==260))
-        vars.end = 1; // sets a variable when the chapter gets changed back to 256
-    if(current.pause!=1 && vars.end==1){ // splits when the game is then paused, which after the variable is set would then have to be the end screen
-        vars.end = 2;
-        vars.startchapter = 0; // for longer runs which might re-enter the starting chapter
-        return true;
-    }
-
     if(current.mug>old.mug){
         return (settings["misd"] && current.mug==5)
             || (settings["m10"] && current.mug%10==0)
@@ -233,7 +233,7 @@ split
     if(current.vhs>old.vhs){
         return (settings["sac"] && current.vhs==1)
             || (settings["v"])
-            || (settings["ftb"] && current.vhs==7);
+            || (settings["ftc"] && current.vhs==7);
     }
     if(current.lookout>old.lookout){
         return (settings["l"])
