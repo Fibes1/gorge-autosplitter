@@ -109,7 +109,7 @@ split
         vars.end = 1; // sets a variable when the chapter gets changed back to 256
     if(current.pause!=1 && vars.end==1){ // splits when the game is then paused, which after the variable is set would then have to be the end screen
         vars.end = 2;
-        vars.startchapter = 0; // for longer runs which might re-enter the starting chapter
+        vars.startchapter = 1; // for longer runs which might re-enter the starting chapter
         return true;
     }
 
