@@ -6,10 +6,10 @@ state("Gorge-Win64-Shipping")
     double checkpoint: 0x35E0228, 0x8, 0x100, 0x2D4; // unique number for the current checkpoint, theres a lot of these addresses but this seems to be the only one that has no repeats. doesnt change when rewinding chapter in most cases
     int chapter: 0x35E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
 
-    byte mug: 0x313A960, 0xA0; // number of mugs collected
-    byte vhs: 0x313A960, 0x140; // number of vhs tapes collected
-    byte challenge: 0x35E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
-    byte lookout: 0x313A960, 0xD0; // number of lookouts visited
+    byte mug: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
+    byte vhs: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
+    byte challenge: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
+    byte lookout: 0x035E0228, 0x8, 0x360, 0xD0; // number of lookouts visited
 }
 
 startup
