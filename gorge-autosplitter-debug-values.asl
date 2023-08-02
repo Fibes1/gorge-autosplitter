@@ -1,19 +1,19 @@
 state("Gorge-Win64-Shipping")
 {
     int pause: 0x35E03C0, 0x2B4; // not paused = 1
-    bool pause1: 0x035E1220, 0x8D0; // this isn't used for the normal autosplitter, since it leaves a gap when exiting to the main menu. the other one does the same for rewind chapter, but that doesn't matter nearly as much
+    bool pause1: 0x35E1220, 0x8D0; // this isn't used for the normal autosplitter, since it leaves a gap when exiting to the main menu. the other one does the same for rewind chapter, but that doesn't matter nearly as much
     int load: 0x35E0228, 0x8, 0x100, 0x30C; // loading or main menu = 0
 
     double checkpoint: 0x35E0228, 0x8, 0x100, 0x2D4; // unique number for the current checkpoint, theres a lot of these addresses but this seems to be the only one that has no repeats. doesnt change when rewinding chapter in most cases
     int chapter: 0x35E0228, 0x8, 0x100, 0x408; // wake-up = 256, gorge = 257, caves = 258, reservoir = 259, secondary = 260, primary = 261, sometimes the first chapter that you play after opening the game can also be 0
 
-    byte mug: 0x035E0228, 0x8, 0x360, 0xA0; // number of mugs collected
-    byte vhs: 0x035E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
-    byte challenge: 0x035E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
-    byte lookout: 0x035E0228, 0x8, 0x360, 0xD0; // number of lookouts visited
+    byte mug: 0x35E0228, 0x8, 0x360, 0xA0; // number of mugs collected
+    byte vhs: 0x35E0228, 0x8, 0x360, 0x140; // number of vhs tapes collected
+    byte challenge: 0x35E0228, 0x8, 0x378, 0x30; // number of challenge courses completed in under par time
+    byte lookout: 0x35E0228, 0x8, 0x360, 0xD0; // number of lookouts visited
 
-    int cpcount: 0x035E03C0, 0x58, 0x498; // used for the gorge done quick achievement
-    float freeze: 0x035E6D30, 0x100, 0x3B0, 0x70, 0x1B8, 0x248;
+    int cpcount: 0x35E03C0, 0x58, 0x498; // used for the gorge done quick achievement
+    float freeze: 0x35E6D30, 0x100, 0x3B0, 0x70, 0x1B8, 0x248;
 }
 
 startup
